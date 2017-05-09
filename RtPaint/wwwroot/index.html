@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>RtPaint</title>
+
+    <style>
+        .btn {
+            width: 2em;
+            height: 2em;
+        }
+
+        .bar {
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            transform: translate(-50%, -0%);
+            margin: 0;
+            transition: bottom .3s linear;
+        }
+
+        .bar-fade {
+            bottom: -7em;
+        }
+
+        .bg-red {
+            background-color: red;
+        }
+
+        .bg-green {
+            background-color: green;
+        }
+
+        .bg-blue {
+            background-color: blue;
+        }
+
+        .bg-black {
+            background-color: black;
+        }
+
+        .bg-yellow {
+            background-color: yellow;
+        }
+
+        .bg-purple {
+            background-color: purple;
+        }
+
+        .indicator {
+            font-weight: bolder;
+            width: 1.5em;
+            height: 1.5em;
+            border: 0.5px dashed gray;
+        }
+    </style>
+</head>
+<body style="margin: 0; overflow: hidden;">
+    <div id="toolbar" class="bar bar-fade">
+        <div>
+            <button class="btn" id="backButton">&lt;</button>
+            <button class="btn" id="forwardButton">&gt;</button>
+        </div>
+        <div id="colorGroup">
+            <button class="btn bg-black indicator"></button>
+            <button class="btn bg-red"></button>
+            <button class="btn bg-green"></button>
+            <button class="btn bg-blue"></button>
+            <button class="btn bg-yellow"></button>
+            <button class="btn bg-purple"></button>
+            <button class="btn bg-black"></button>
+        </div>
+        <div id="sizeGroup">
+            <button class="btn indicator">3</button>
+            <button class="btn">1</button>
+            <button class="btn">3</button>
+            <button class="btn">5</button>
+            <button class="btn">10</button>
+        </div>
+        <button class="btn" id="closeButton">x</button>
+    </div>
+    <div id="openbar" class="bar">
+        <button class="btn" id="openButton">+</button>
+    </div>
+
+    <canvas width="500" height="500"></canvas>
+    <script src="index.js"></script>
+</body>
+</html>
