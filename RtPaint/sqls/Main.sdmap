@@ -1,0 +1,19 @@
+﻿namespace RtPaint
+{
+	sql Create
+	{
+		INSERT INTO Paint(Title) VALUES (NULL);
+		SELECT SCOPE_IDENTITY();
+	}
+
+	sql CreateBrush
+	{
+		INSERT INTO PaintDetails(PaintId, Size, Color, PathText) VALUES (@PaintId, @Size, @Color, @PathText);
+		SELECT SCOPE_IDENTITY();
+	}
+
+	sql DeleteBrush
+	{
+		DELETE FROM PaintDetails WHERE Id = @Id AND PaintId = @PaintId;
+	}
+}
