@@ -51,12 +51,14 @@ namespace RtPaint.Controllers
         public void Back(int paintId)
         {
             var affectedRows = _connection.ExecuteById("RtPaint.BackBrush", new { PaintId = paintId });
+            ValidateAffectedRows(affectedRows);
         }
 
         [Route("{paintId}/Forward")]
         public void Forward(int paintId)
         {
             var affectedRows = _connection.ExecuteById("RtPaint.ForwardBrush", new { PaintId = paintId });
+            ValidateAffectedRows(affectedRows);
         }
 
         [Route("{paintId}/DeleteBrush/{brushId}")]
@@ -67,7 +69,15 @@ namespace RtPaint.Controllers
                 PaintId = paintId,
                 Id = brushId
             });
-            Contract.Assert(affectedRows == 1);
+            ValidateAffectedRows(affectedRows);
+        }
+
+        private void ValidateAffectedRows(int affectedRows)
+        {
+            if (affectedRows != 1)
+            {
+                throw new Exception($"AffectedRows expected to 1 but get: {affectedRows}, this generally indicates a bug.");
+            }
         }
     }
 }
