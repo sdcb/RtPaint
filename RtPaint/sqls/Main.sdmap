@@ -6,6 +6,32 @@
 		SELECT SCOPE_IDENTITY();
 	}
 
+	sql GetBrush
+	{
+		SELECT * FROM PaintDetails WHERE PaintId = @PaintId
+		ORDER BY Id ASC;
+	}
+
+	sql BackBrush
+	{
+		UPDATE PaintDetails SET IsForward = 1
+		WHERE Id = 
+		(
+			SELECT MAX(Id) FROM PaintDetails
+			WHERE PaintId = @PaintId
+		)
+	}
+
+	sql ForwardBrush
+	{
+		UPDATE PaintDetails SET IsForward = 0
+		WHERE Id = 
+		(
+			SELECT MAX(Id) FROM PaintDetails
+			WHERE PaintId = @PaintId
+		)
+	}
+
 	sql CreateBrush
 	{
 		INSERT INTO PaintDetails(PaintId, Size, Color, PathText) VALUES (@PaintId, @Size, @Color, @PathText);

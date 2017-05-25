@@ -25,12 +25,38 @@ namespace RtPaint.Controllers
         {
             return _connection.ExecuteScalarById<int>("RtPaint.Create");
         }
+
+        [Route("{paintId}")]
+        public PaintDto Get(int paintId)
+        {
+            var brushLists = _connection
+                .QueryById<PaintDetails>("RtPaint.GetBrush", new { PaintId = paintId }, null, false)
+                .Select(x => x.ToDto())
+                .ToList();
+            return new PaintDto
+            {
+                Id = paintId, 
+                Brushes = brushLists
+            };
+        }
         
         [Route("{paintId}/CreateBrush")]
-        public long CreateBrush(int paintId, [FromBody] PencilBrushDto pen)
+        public long CreateBrush(int paintId, [FromBody] BrushDto pen)
         {
             var db = pen.ToDbModel(paintId);
             return _connection.ExecuteScalarById<long>("RtPaint.CreateBrush", db);
+        }
+
+        [Route("{paintId}/Back")]
+        public void Back(int paintId)
+        {
+            var affectedRows = _connection.ExecuteById("RtPaint.BackBrush", new { PaintId = paintId });
+        }
+
+        [Route("{paintId}/Forward")]
+        public void Forward(int paintId)
+        {
+            var affectedRows = _connection.ExecuteById("RtPaint.ForwardBrush", new { PaintId = paintId });
         }
 
         [Route("{paintId}/DeleteBrush/{brushId}")]

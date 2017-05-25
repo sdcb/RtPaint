@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace RtPaint.Dtos
 {
-    public class PencilBrushDto
+    public class BrushDto
     {
         public float Size { get; set; }
 
@@ -39,9 +39,9 @@ namespace RtPaint.Dtos
 
         public DateTime CreateTime { get; set; }
 
-        public PencilBrushDto ToDto()
+        public BrushDto ToDto()
         {
-            return new PencilBrushDto
+            return new BrushDto
             {
                 Color = Color, 
                 Path = PathText.Split(',').Select(float.Parse).ToList(), 
