@@ -9,9 +9,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="wwwroot\api.js" />
+    <Content Include="wwwroot\api.js.map" />
+    <Content Include="wwwroot\api.ts" />
+    <Content Include="wwwroot\dom.ts" />
     <Content Include="wwwroot\index.html" />
     <Content Include="wwwroot\index.ts" />
     <Content Include="wwwroot\RtPaintApi.ts" />
+    <Content Include="wwwroot\RtPaintDto.d.ts" />
     <Content Include="wwwroot\sde\float3x2.ts" />
     <Content Include="wwwroot\tsconfig.json" />
   </ItemGroup>
