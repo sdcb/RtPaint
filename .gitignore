@@ -262,3 +262,5 @@ __pycache__/
 
 # Custom
 appsettings.Development.json
+*.js
+*.js.map

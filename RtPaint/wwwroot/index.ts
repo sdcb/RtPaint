@@ -1,13 +1,19 @@
-﻿class Dom {
-    canvas = document.querySelector("canvas");
-    backButton = document.querySelector("#backButton");
-    forwardButton = document.querySelector("#forwardButton");
+﻿function NN<T>(t: T | null | undefined) {
+    if (t === null || t === undefined)
+        throw new Error("t should not be null or undefined.");
+    return t;
+}
 
-    toolbar = document.querySelector("#toolbar");
-    openbar = document.querySelector("#openbar");
+class Dom {
+    canvas = NN(document.querySelector("canvas"));
+    backButton = NN(document.querySelector("#backButton"));
+    forwardButton = NN(document.querySelector("#forwardButton"));
 
-    openButton = <HTMLDivElement>document.querySelector("#openButton");
-    closeButton = <HTMLDivElement>document.querySelector("#closeButton");
+    toolbar = NN(document.querySelector("#toolbar"));
+    openbar = NN(document.querySelector("#openbar"));
+
+    openButton = NN(<HTMLDivElement>document.querySelector("#openButton"));
+    closeButton = NN(<HTMLDivElement>document.querySelector("#closeButton"));
 
     toggleOpenBar() {
         this.toolbar.classList.toggle("bar-fade");
@@ -45,7 +51,7 @@
         for (let i = 0; i < colorButtons.length; ++i) {
             let btn = colorButtons[i];
             btn.addEventListener("click", () => {
-                doSet(getComputedStyle(btn, null).backgroundColor);
+                doSet(NN(NN(getComputedStyle(btn)).backgroundColor));
             });
         }
 
@@ -145,13 +151,13 @@ class BrushManager {
 
     back() {
         if (this.brushes.length > 0) {
-            this.backBrushes.push(this.brushes.pop());
+            this.backBrushes.push(NN(this.brushes.pop()));
         }
     }
 
     forward() {
         if (this.backBrushes.length > 0) {
-            this.brushes.push(this.backBrushes.pop());
+            this.brushes.push(NN(this.backBrushes.pop()));
         }
     }
 
@@ -185,7 +191,7 @@ class BrushManager {
 
 class Renderer {
     brushMgr = new BrushManager();
-    ctx = dom.canvas.getContext("2d");
+    ctx = NN(dom.canvas.getContext("2d"));
 
     constructor() {
         this.resize();
