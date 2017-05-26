@@ -42,4 +42,9 @@
 	{
 		DELETE FROM PaintDetails WHERE Id = @Id AND PaintId = @PaintId;
 	}
+
+	sql Clear
+	{
+		DELETE FROM PaintDetails WHERE PaintId = @PaintId;
+	}
 }

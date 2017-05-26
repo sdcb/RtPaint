@@ -75,6 +75,12 @@ namespace RtPaint.Controllers
             ValidateAffectedRows(affectedRows);
         }
 
+        [Route("{paintId}/Clear")]
+        public int Clear(int paintId)
+        {
+            return _connection.ExecuteById("RtPaint.Clear", new { PaintId = paintId });
+        }
+
         private void ValidateAffectedRows(int affectedRows)
         {
             if (affectedRows != 1)
