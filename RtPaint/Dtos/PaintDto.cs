@@ -9,6 +9,8 @@ namespace RtPaint.Dtos
     {
         public int Id { get; set; }
 
-        public List<BrushDto> Brushes { get; set; }
+        public IEnumerable<BrushDto> Brushes { get; set; }
+
+        public IEnumerable<BrushDto> ForwardBrushes { get; set; }
     }
 }

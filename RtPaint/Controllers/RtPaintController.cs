@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Dapper;
+using Microsoft.AspNetCore.Mvc;
 using RtPaint.Dtos;
 using RtPaint.Infrastructure;
 using sdmap.Extensions;
@@ -30,13 +31,15 @@ namespace RtPaint.Controllers
         public PaintDto Get(int paintId)
         {
             var brushLists = _connection
-                .QueryById<PaintDetails>("RtPaint.GetBrush", new { PaintId = paintId }, null, false)
-                .Select(x => x.ToDto())
-                .ToList();
+                .QueryById<PaintDetails>("RtPaint.GetBrush", new { PaintId = paintId })
+                .AsList();
             return new PaintDto
             {
                 Id = paintId, 
                 Brushes = brushLists
+                    .Where(x => !x.IsForward).Select(x => x.ToDto()), 
+                ForwardBrushes = brushLists
+                    .Where(x => x.IsForward).Select(x => x.ToDto())
             };
         }
         

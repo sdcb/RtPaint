@@ -31,6 +31,8 @@ namespace RtPaint.Dtos
 
         public int PaintId { get; set; }
 
+        public bool IsForward { get; set; }
+
         public float Size { get; set; }
 
         public string Color { get; set; }
