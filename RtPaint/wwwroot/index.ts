@@ -34,6 +34,8 @@
 
         constructor(private paintId: number) {
             api.get(paintId).then(dto => {
+                this.currentColor = dto.currentColor;
+                this.currentSize = dto.currentSize;
                 for (let brush of dto.brushes) {
                     this.brushes.push(PencilBrush.fromDto(brush));
                 }
@@ -71,23 +73,25 @@
         back() {
             if (this.brushes.length > 0) {
                 this.forwardBrushes.push(NN(this.brushes.pop()));
+                api.back(this.paintId);
             }
-            api.back(this.paintId);
         }
 
         forward() {
             if (this.forwardBrushes.length > 0) {
                 this.brushes.push(NN(this.forwardBrushes.pop()));
+                api.forward(this.paintId);
             }
-            api.forward(this.paintId);
         }
 
         setColor(color: string) {
             this.currentColor = color;
+            api.updateColor(this.paintId, color);
         }
 
         setSize(size: number) {
             this.currentSize = size;
+            api.updateSize(this.paintId, size);
         }
     }
 

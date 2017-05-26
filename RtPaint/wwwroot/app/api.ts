@@ -8,6 +8,14 @@
             return Http.get<PaintDto>(paintId.toString());
         }
 
+        updateColor(paintId: number, color: string) {
+            return Http.post<void>(`${paintId}/UpdateColor/${color}`);
+        }
+
+        updateSize(paintId: number, size: number) {
+            return Http.post<void>(`${paintId}/UpdateSize/${size}`);
+        }
+
         createBrush(paintId: number, pen: BrushDto) {
             return Http.post<number>(`${paintId}/createBrush`, pen);
         }
@@ -45,7 +53,9 @@
             if (!response.ok)
                 throw response;
 
-            return <T>await response.json();
+            if (response.headers.get("Content-Length") !== "0") {
+                return <T>await response.json();
+            }
         }
 
         static async get<T>(path: string) {

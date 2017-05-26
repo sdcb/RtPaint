@@ -9,24 +9,30 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="wwwroot\api - 复制.js" />
-    <Content Include="wwwroot\api - 复制.js.map" />
-    <Content Include="wwwroot\api - 复制.ts" />
-    <Content Include="wwwroot\api.js" />
-    <Content Include="wwwroot\api.js.map" />
-    <Content Include="wwwroot\api.ts" />
-    <Content Include="wwwroot\dom.ts" />
+    <Content Include="wwwroot\app\api.js" />
+    <Content Include="wwwroot\app\api.js.map" />
+    <Content Include="wwwroot\app\api.ts" />
+    <Content Include="wwwroot\app\dom.js" />
+    <Content Include="wwwroot\app\dom.js.map" />
+    <Content Include="wwwroot\app\dom.ts" />
+    <Content Include="wwwroot\app\hub.ts" />
+    <Content Include="wwwroot\app\RtPaintDto.d.ts" />
+    <Content Include="wwwroot\app\utils.js" />
+    <Content Include="wwwroot\app\utils.js.map" />
+    <Content Include="wwwroot\app\utils.ts" />
     <Content Include="wwwroot\index.html" />
     <Content Include="wwwroot\index.ts" />
-    <Content Include="wwwroot\RtPaintDto.d.ts" />
+    <Content Include="wwwroot\scripts\index.d.ts">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="wwwroot\scripts\jquery.d.ts" />
+    <Content Include="wwwroot\scripts\jquery.signalR.js" />
+    <Content Include="wwwroot\scripts\jquery.signalR.min.js" />
+    <Content Include="wwwroot\scripts\jquery.slim.js" />
+    <Content Include="wwwroot\scripts\jquery.slim.min.js" />
+    <Content Include="wwwroot\scripts\jquery.slim.min.map" />
     <Content Include="wwwroot\sde\float3x2.ts" />
     <Content Include="wwwroot\tsconfig.json" />
-    <Content Include="wwwroot\util.js" />
-    <Content Include="wwwroot\util.js.map" />
-    <Content Include="wwwroot\util.ts" />
-    <Content Include="wwwroot\utils.js" />
-    <Content Include="wwwroot\utils.js.map" />
-    <Content Include="wwwroot\utils.ts" />
   </ItemGroup>
 
   <ItemGroup>

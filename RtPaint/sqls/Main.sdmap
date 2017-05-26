@@ -2,8 +2,13 @@
 {
 	sql Create
 	{
-		INSERT INTO Paint(Size, Color, CreateIP) VALUES (@Size, @Color, @CreateIP);
+		INSERT INTO Paint(CurrentColor, CurrentSize, CreateIP) VALUES (@CurrentColor, @CurrentSize, @CreateIP);
 		SELECT SCOPE_IDENTITY();
+	}
+
+	sql Get
+	{
+		SELECT * FROM Paint WHERE Id = @PaintId;
 	}
 
 	sql GetBrush
@@ -12,13 +17,25 @@
 		ORDER BY Id ASC;
 	}
 
+	sql UpdateColor
+	{
+		UPDATE Paint SET CurrentColor = @CurrentColor WHERE Id = @PaintId;
+	}
+
+	sql UpdateSize
+	{
+		UPDATE Paint SET CurrentSize = @CurrentSize WHERE Id = @PaintId;
+	}
+
 	sql BackBrush
 	{
 		UPDATE PaintDetails SET IsForward = 1
 		WHERE Id = 
 		(
 			SELECT MAX(Id) FROM PaintDetails
-			WHERE PaintId = @PaintId
+			WHERE 
+				PaintId   = @PaintId AND
+				IsForward = 0
 		)
 	}
 
@@ -28,7 +45,9 @@
 		WHERE Id = 
 		(
 			SELECT MAX(Id) FROM PaintDetails
-			WHERE PaintId = @PaintId
+			WHERE 
+				PaintId   = @PaintId AND
+				IsForward = 1
 		)
 	}
 

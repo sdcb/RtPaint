@@ -1,6 +1,8 @@
 ﻿declare namespace RtPaint {
     export interface PaintDto {
         id: number;
+        currentColor: string;
+        currentSize: number;
         brushes: BrushDto[];
         forwardBrushes: BrushDto[];
     }

@@ -36,6 +36,10 @@ namespace RtPaint
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddSignalR(options =>
+            {
+                options.Hubs.EnableDetailedErrors = true;
+            });
 
             var cs = Configuration.GetConnectionString("DefaultConnection");
             services.AddTransient(c => new SqlConnection(Configuration.GetConnectionString("DefaultConnection")));
@@ -52,6 +56,8 @@ namespace RtPaint
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseMvcWithDefaultRoute();
+            app.UseSignalR();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

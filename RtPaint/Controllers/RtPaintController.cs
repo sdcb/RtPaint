@@ -39,10 +39,24 @@ namespace RtPaint.Controllers
         {
             return _connection.ExecuteScalarById<int>("RtPaint.Create", new
             {
-                Size = size, 
-                Color = color, 
+                CurrentColor = color,
+                CurrentSize = size, 
                 CreateIP = GetRequestIP()
             });
+        }
+
+        [Route("{paintId}/UpdateColor/{color}")]
+        public void UpdateColor(int paintId, string color)
+        {
+            var affectedRows = _connection.ExecuteById("RtPaint.UpdateColor", new { PaintId = paintId, CurrentColor = color });
+            ValidateAffectedRows(affectedRows);
+        }
+
+        [Route("{paintId}/UpdateSize/{size}")]
+        public void UpdateSize(int paintId, float size)
+        {
+            var affectedRows = _connection.ExecuteById("RtPaint.UpdateSize", new { PaintId = paintId, CurrentSize = size });
+            ValidateAffectedRows(affectedRows);
         }
 
         [Route("{paintId}")]
@@ -51,9 +65,12 @@ namespace RtPaint.Controllers
             var brushLists = _connection
                 .QueryById<PaintDetails>("RtPaint.GetBrush", new { PaintId = paintId })
                 .AsList();
+            var dto = _connection.QuerySingleById("RtPaint.Get", new { PaintId = paintId });
             return new PaintDto
             {
                 Id = paintId, 
+                CurrentColor = dto.CurrentColor, 
+                CurrentSize = dto.CurrentSize, 
                 Brushes = brushLists
                     .Where(x => !x.IsForward).Select(x => x.ToDto()), 
                 ForwardBrushes = brushLists
