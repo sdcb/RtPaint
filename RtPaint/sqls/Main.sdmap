@@ -2,7 +2,7 @@
 {
 	sql Create
 	{
-		INSERT INTO Paint(Title) VALUES (NULL);
+		INSERT INTO Paint(Size, Color, CreateIP) VALUES (@Size, @Color, @CreateIP);
 		SELECT SCOPE_IDENTITY();
 	}
 

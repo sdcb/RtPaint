@@ -1,17 +1,11 @@
 ﻿namespace RtPaint {
-    export function NN<T>(t: T | null | undefined) {
-        if (t === null || t === undefined)
-            throw new Error("t should not be null or undefined.");
-        return t;
-    }
-
     export class Api {
-        create() {
-            return Http.post<number>("");
+        create(size: number, color: string) {
+            return Http.post<number>(`?size=${size}&color=${color}`);
         }
 
-        get<PaintDto>(paintId: number) {
-            return Http.get(paintId.toString());
+        get(paintId: number) {
+            return Http.get<PaintDto>(paintId.toString());
         }
 
         createBrush(paintId: number, pen: BrushDto) {
@@ -42,7 +36,10 @@
             let url = Http.baseUrl + path;
             let response = await fetch(url, {
                 method: "post",
-                body: data
+                body: JSON.stringify(data), 
+                headers: {
+                    "Content-Type": "application/json"
+                }
             });
 
             if (!response.ok)

@@ -18,6 +18,7 @@
         constructor() {
             this.openButton.addEventListener("click", () => this.toggleOpenBar());
             this.closeButton.addEventListener("click", () => this.toggleOpenBar());
+            this.resize();
         }
 
         resize() {
@@ -128,10 +129,11 @@
             this.canvas.addEventListener("touchmove", e => commonCallback(e));
         }
 
-        onEnd(cb: (x: number, y: number) => any) {
+        onEnd(cb: (x?: number, y?: number) => any) {
             let commonCallback = (e: MouseEvent | TouchEvent) => {
                 let p = this.getXy(e);
                 p && cb(p.x, p.y);
+                p || cb();
             }
 
             this.canvas.addEventListener("mouseup", e => commonCallback(e));

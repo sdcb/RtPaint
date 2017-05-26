@@ -22,9 +22,27 @@ namespace RtPaint.Controllers
             _connection = connection;
         }
 
-        public int Post()
+        private string GetRequestIP()
         {
-            return _connection.ExecuteScalarById<int>("RtPaint.Create");
+            var forwarded = Request.Headers["X-Forwarded-For"];
+            if (forwarded.Any())
+            {
+                return forwarded.ToString();
+            }
+            else
+            {
+                return HttpContext.Connection.RemoteIpAddress.ToString();
+            }
+        }
+
+        public int Post(float size, string color)
+        {
+            return _connection.ExecuteScalarById<int>("RtPaint.Create", new
+            {
+                Size = size, 
+                Color = color, 
+                CreateIP = GetRequestIP()
+            });
         }
 
         [Route("{paintId}")]

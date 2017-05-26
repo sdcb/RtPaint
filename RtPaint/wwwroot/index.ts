@@ -1,7 +1,8 @@
 ﻿namespace RtPaint {
     let dom = new Dom();
+    let api = new Api();
 
-    class PencilBrush {
+    class PencilBrush implements BrushDto {
         path = Array<number>();
         static lineCap = "round";
         static lineJoin = "round";
@@ -14,14 +15,33 @@
         moveTo(x: number, y: number) {
             this.path.push(x, y);
         }
+
+        static fromDto(dto: BrushDto) {
+            let r = new PencilBrush(dto.size, dto.color);
+            r.path = dto.path;
+            return r;
+        }
     }
 
+    const DefaultSize = 3;
+    const DefaultColor = "black";
     class BrushManager {
         brushes = Array<PencilBrush>();
-        backBrushes = Array<PencilBrush>();
+        forwardBrushes = Array<PencilBrush>();
         capturing = false;
-        currentSize = 3;
-        currentColor = "black";
+        currentSize = DefaultSize;
+        currentColor = DefaultColor;
+
+        constructor(private paintId: number) {
+            api.get(paintId).then(dto => {
+                for (let brush of dto.brushes) {
+                    this.brushes.push(PencilBrush.fromDto(brush));
+                }
+                for (let brush of dto.forwardBrushes) {
+                    this.forwardBrushes.push(PencilBrush.fromDto(brush));
+                }
+            });
+        }
 
         start(x: number, y: number) {
             this.capturing = true;
@@ -30,9 +50,15 @@
             this.moveTo(x, y);
         }
 
-        end(x: number, y: number) {
-            this.moveTo(x, y);
-            this.capturing = false;
+        end(x?: number, y?: number) {
+            if (this.capturing) {
+                if (x !== undefined && y !== undefined) {
+                    this.moveTo(x, y);
+                }
+                
+                this.capturing = false;
+                api.createBrush(this.paintId, this.brushes[this.brushes.length - 1]);
+            }
         }
 
         moveTo(x: number, y: number) {
@@ -44,33 +70,16 @@
 
         back() {
             if (this.brushes.length > 0) {
-                this.backBrushes.push(NN(this.brushes.pop()));
+                this.forwardBrushes.push(NN(this.brushes.pop()));
             }
+            api.back(this.paintId);
         }
 
         forward() {
-            if (this.backBrushes.length > 0) {
-                this.brushes.push(NN(this.backBrushes.pop()));
+            if (this.forwardBrushes.length > 0) {
+                this.brushes.push(NN(this.forwardBrushes.pop()));
             }
-        }
-
-        draw(ctx: CanvasRenderingContext2D) {
-            ctx.save();
-            ctx.lineCap = PencilBrush.lineCap;
-            ctx.lineJoin = PencilBrush.lineJoin;
-            for (let brush of this.brushes) {
-                ctx.beginPath();
-                ctx.lineWidth = brush.size;
-
-                if (brush.path.length >= 2) {
-                    ctx.moveTo(brush.path[0], brush.path[1]);
-                    for (let i = 2; i < brush.path.length; i += 2)
-                        ctx.lineTo(brush.path[i], brush.path[i + 1]);
-                }
-                ctx.strokeStyle = brush.color;
-                ctx.stroke();
-            }
-            ctx.restore();
+            api.forward(this.paintId);
         }
 
         setColor(color: string) {
@@ -83,19 +92,9 @@
     }
 
     class Renderer {
-        brushMgr = new BrushManager();
         ctx = NN(dom.canvas.getContext("2d"));
 
-        constructor() {
-            dom.onStart((x, y) => this.brushMgr.start(x, y));
-            dom.onEnd((x, y) => this.brushMgr.end(x, y));
-            dom.onMove((x, y) => this.brushMgr.moveTo(x, y));
-
-            dom.onBack(() => this.brushMgr.back());
-            dom.onForward(() => this.brushMgr.forward());
-
-            dom.onColor(c => this.brushMgr.setColor(c));
-            dom.onSize(s => this.brushMgr.setSize(s));
+        constructor(private brushMgr: BrushManager) {
         }
 
         render() {
@@ -106,11 +105,50 @@
         draw() {
             this.ctx.fillStyle = "white";
             this.ctx.fillRect(0, 0, dom.canvas.width, dom.canvas.height);
-            this.brushMgr.draw(this.ctx);
+            
+            this.ctx.save();
+            this.ctx.lineCap = PencilBrush.lineCap;
+            this.ctx.lineJoin = PencilBrush.lineJoin;
+            for (let brush of this.brushMgr.brushes) {
+                this.ctx.beginPath();
+                this.ctx.lineWidth = brush.size;
+
+                if (brush.path.length >= 2) {
+                    this.ctx.moveTo(brush.path[0], brush.path[1]);
+                    for (let i = 2; i < brush.path.length; i += 2)
+                        this.ctx.lineTo(brush.path[i], brush.path[i + 1]);
+                }
+                this.ctx.strokeStyle = brush.color;
+                this.ctx.stroke();
+            }
+            this.ctx.restore();
         }
     }
 
-    let r = new Renderer();
-    r.render();
-    window["r"] = r;
+    async function main() {
+        let paintId = getUrlQuery("paintId");
+        if (paintId === null) {
+            let paintId = await api.create(DefaultSize, DefaultColor);
+            location.replace(`?paintId=${paintId}`);
+        } else {
+            let brushMgr = new BrushManager(parseInt(paintId));
+            let r = new Renderer(brushMgr);
+
+            dom.onStart((x, y) => brushMgr.start(x, y));
+            dom.onEnd((x, y) => brushMgr.end(x, y));
+            dom.onMove((x, y) => brushMgr.moveTo(x, y));
+
+            dom.onBack(() => brushMgr.back());
+            dom.onForward(() => brushMgr.forward());
+
+            dom.onColor(c => brushMgr.setColor(c));
+            dom.onSize(s => brushMgr.setSize(s));
+
+            r.render();
+            window["r"] = r;
+            window["b"] = brushMgr;
+        }
+    }
+
+    main();
 }
