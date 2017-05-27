@@ -31,6 +31,7 @@
         brushes = Array<PencilBrush>();
         forwardBrushes = Array<PencilBrush>();
         capturing = false;
+        otherEdit = false;
         currentSize = DefaultSize;
         currentColor = DefaultColor;
 
@@ -48,6 +49,9 @@
         }
 
         start(x: number, y: number, push = true) {
+            if (push && this.otherEdit)
+                return;
+
             this.capturing = true;
             this.brushes.push(new PencilBrush(this.currentSize, this.currentColor));
 
@@ -55,10 +59,15 @@
 
             if (push) {
                 hubServer.start(this.paintId, x, y);
+            } else {
+                this.otherEdit = true;
             }
         }
 
         end(x?: number, y?: number, push = true) {
+            if (push && this.otherEdit) 
+                return;
+
             if (this.capturing) {
                 if (x && y) {
                     this.moveTo(x, y);
@@ -66,6 +75,7 @@
 
                 this.forwardBrushes = [];
                 this.capturing = false;
+                this.otherEdit = false;
 
                 if (push) {
                     api.createBrush(this.paintId, this.brushes[this.brushes.length - 1]);
@@ -75,6 +85,9 @@
         }
 
         moveTo(x: number, y: number, push = true) {
+            if (push && this.otherEdit)
+                return;
+
             if (this.capturing) {
                 let brush = this.brushes[this.brushes.length - 1];
                 brush.moveTo(x, y);
@@ -86,6 +99,9 @@
         }
 
         back(push = true) {
+            if (push && this.otherEdit)
+                return;
+
             if (this.brushes.length > 0) {
                 this.forwardBrushes.push(NN(this.brushes.pop()));
                 api.back(this.paintId);
@@ -97,6 +113,9 @@
         }
 
         forward(push = true) {
+            if (push && this.otherEdit)
+                return;
+
             if (this.forwardBrushes.length > 0) {
                 this.brushes.push(NN(this.forwardBrushes.pop()));
             }
@@ -108,6 +127,9 @@
         }
 
         setColor(color: string, push = true) {
+            if (push && this.otherEdit)
+                return;
+
             this.currentColor = color;
 
             if (push) {
@@ -117,6 +139,9 @@
         }
 
         setSize(size: number, push = true) {
+            if (push && this.otherEdit)
+                return;
+
             this.currentSize = size;
 
             if (push) {
