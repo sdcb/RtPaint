@@ -51,17 +51,17 @@ namespace RtPaint
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole();
-            
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
-            app.UseMvcWithDefaultRoute();
-            app.UseWebSockets();
-            app.UseSignalR();
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+            app.UseMvcWithDefaultRoute();
+            app.UseWebSockets();
+            app.UseSignalR();
         }
     }
 }

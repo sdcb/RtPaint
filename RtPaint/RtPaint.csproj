@@ -21,16 +21,8 @@
     <Content Include="wwwroot\app\utils.js" />
     <Content Include="wwwroot\app\utils.js.map" />
     <Content Include="wwwroot\app\utils.ts" />
-    <Content Include="wwwroot\index - 复制.html" />
-    <Content Include="wwwroot\index - 复制.js.map">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
     <Content Include="wwwroot\index.html" />
     <Content Include="wwwroot\index.ts" />
-    <Content Include="wwwroot\index2.html" />
-    <Content Include="wwwroot\index2.js" />
-    <Content Include="wwwroot\index2.js.map" />
-    <Content Include="wwwroot\index2.ts" />
     <Content Include="wwwroot\scripts\jquery.d.ts" />
     <Content Include="wwwroot\scripts\jquery.js" />
     <Content Include="wwwroot\scripts\jquery.min.js" />

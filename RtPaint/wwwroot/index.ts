@@ -104,10 +104,10 @@
 
             if (this.brushes.length > 0) {
                 this.forwardBrushes.push(NN(this.brushes.pop()));
-                api.back(this.paintId);
             }
 
             if (push) {
+                api.back(this.paintId);
                 hubServer.back(this.paintId);
             }
         }
