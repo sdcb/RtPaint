@@ -9,6 +9,7 @@
 
         openButton = NN(<HTMLDivElement>document.querySelector("#openButton"));
         closeButton = NN(<HTMLDivElement>document.querySelector("#closeButton"));
+        newButton = NN(<HTMLButtonElement>document.querySelector("#newButton"));
 
         toggleOpenBar() {
             this.toolbar.classList.toggle("bar-fade");
@@ -18,8 +19,11 @@
         constructor() {
             this.openButton.addEventListener("click", () => this.toggleOpenBar());
             this.closeButton.addEventListener("click", () => this.toggleOpenBar());
+            this.newButton.addEventListener("click", () => this.createNew && this.createNew());
             this.resize();
         }
+
+        createNew: () => any;
 
         resize() {
             this.canvas.width = innerWidth;

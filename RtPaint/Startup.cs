@@ -43,7 +43,6 @@ namespace RtPaint
 
             var cs = Configuration.GetConnectionString("DefaultConnection");
             services.AddTransient(c => new SqlConnection(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddTransient<MyConnection>();
 
             SdmapExtensions.SetSqlEmiter(EmbeddedResourceSqlEmiter.CreateFrom(typeof(Startup).GetTypeInfo().Assembly));
         }
@@ -56,6 +55,7 @@ namespace RtPaint
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseMvcWithDefaultRoute();
+            app.UseWebSockets();
             app.UseSignalR();
 
             if (env.IsDevelopment())

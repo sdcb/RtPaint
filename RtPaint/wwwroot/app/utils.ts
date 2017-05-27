@@ -14,4 +14,12 @@
         if (!results[2]) return '';
         return decodeURIComponent(results[2].replace(/\+/g, " "));
     }
+
+    export function Q<T>(jQueryPromise: JQueryPromise<T>) {
+        return new Promise<T>((res, rej) => {
+            jQueryPromise
+                .then(v => res(v))
+                .fail(v => rej(v));
+        });
+    }
 }

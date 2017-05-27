@@ -15,20 +15,28 @@
     <Content Include="wwwroot\app\dom.js" />
     <Content Include="wwwroot\app\dom.js.map" />
     <Content Include="wwwroot\app\dom.ts" />
-    <Content Include="wwwroot\app\hub.ts" />
+    <Content Include="wwwroot\app\hub.d.js" />
+    <Content Include="wwwroot\app\hub.d.ts" />
     <Content Include="wwwroot\app\RtPaintDto.d.ts" />
     <Content Include="wwwroot\app\utils.js" />
     <Content Include="wwwroot\app\utils.js.map" />
     <Content Include="wwwroot\app\utils.ts" />
-    <Content Include="wwwroot\index.html" />
-    <Content Include="wwwroot\index.ts" />
-    <Content Include="wwwroot\scripts\index.d.ts">
+    <Content Include="wwwroot\index - 复制.html" />
+    <Content Include="wwwroot\index - 复制.js.map">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+    <Content Include="wwwroot\index.html" />
+    <Content Include="wwwroot\index.ts" />
+    <Content Include="wwwroot\index2.html" />
+    <Content Include="wwwroot\index2.js" />
+    <Content Include="wwwroot\index2.js.map" />
+    <Content Include="wwwroot\index2.ts" />
     <Content Include="wwwroot\scripts\jquery.d.ts" />
+    <Content Include="wwwroot\scripts\jquery.js" />
+    <Content Include="wwwroot\scripts\jquery.min.js" />
+    <Content Include="wwwroot\scripts\jquery.min.map" />
     <Content Include="wwwroot\scripts\jquery.signalR.js" />
     <Content Include="wwwroot\scripts\jquery.signalR.min.js" />
-    <Content Include="wwwroot\scripts\jquery.slim.js" />
     <Content Include="wwwroot\scripts\jquery.slim.min.js" />
     <Content Include="wwwroot\scripts\jquery.slim.min.map" />
     <Content Include="wwwroot\sde\float3x2.ts" />
@@ -43,6 +51,7 @@
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="1.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.WebSockets" Version="1.0.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="1.1.2" />
     <PackageReference Include="sdmap.ext" Version="0.10.1" />
   </ItemGroup>

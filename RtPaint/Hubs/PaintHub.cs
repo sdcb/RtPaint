@@ -9,9 +9,14 @@ namespace RtPaint.Hubs
 {
     public class PaintHub : Hub
     {
-        public void Start(int paintId)
+        public async Task Join(int paintId)
         {
-            OtherClientsInGroup(paintId).start();
+            await Groups.Add(Context.ConnectionId, GroupName(paintId));
+        }
+
+        public void Start(int paintId, float x, float y)
+        {
+            OtherClientsInGroup(paintId).start(x, y);
         }
 
         public void MoveTo(int paintId, float x, float y)
@@ -19,9 +24,9 @@ namespace RtPaint.Hubs
             OtherClientsInGroup(paintId).moveTo(x, y);
         }
 
-        public void End(int paintId)
+        public void End(int paintId, float? x, float? y)
         {
-            OtherClientsInGroup(paintId).end();
+            OtherClientsInGroup(paintId).end(x, y);
         }
 
         public void Forward(int paintId)
@@ -46,7 +51,12 @@ namespace RtPaint.Hubs
 
         private dynamic OtherClientsInGroup(int paintId)
         {
-            return Clients.OthersInGroup("Paint-" + paintId);
+            return Clients.OthersInGroup(GroupName(paintId));
+        }
+
+        private string GroupName(int paintId)
+        {
+            return $"Paint-{paintId}";
         }
     }
 }

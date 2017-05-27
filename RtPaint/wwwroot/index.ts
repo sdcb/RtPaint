@@ -1,6 +1,8 @@
 ﻿namespace RtPaint {
     let dom = new Dom();
     let api = new Api();
+    let hubClient = $.signalR.paintHub.client;
+    let hubServer = $.signalR.paintHub.server;
 
     class PencilBrush implements BrushDto {
         path = Array<number>();
@@ -45,53 +47,82 @@
             });
         }
 
-        start(x: number, y: number) {
+        start(x: number, y: number, push = true) {
             this.capturing = true;
             this.brushes.push(new PencilBrush(this.currentSize, this.currentColor));
 
             this.moveTo(x, y);
-        }
 
-        end(x?: number, y?: number) {
-            if (this.capturing) {
-                if (x !== undefined && y !== undefined) {
-                    this.moveTo(x, y);
-                }
-                
-                this.capturing = false;
-                api.createBrush(this.paintId, this.brushes[this.brushes.length - 1]);
+            if (push) {
+                hubServer.start(this.paintId, x, y);
             }
         }
 
-        moveTo(x: number, y: number) {
+        end(x?: number, y?: number, push = true) {
+            if (this.capturing) {
+                if (x && y) {
+                    this.moveTo(x, y);
+                }
+
+                this.forwardBrushes = [];
+                this.capturing = false;
+
+                if (push) {
+                    api.createBrush(this.paintId, this.brushes[this.brushes.length - 1]);
+                    hubServer.end(this.paintId, x, y);
+                }
+            }
+        }
+
+        moveTo(x: number, y: number, push = true) {
             if (this.capturing) {
                 let brush = this.brushes[this.brushes.length - 1];
                 brush.moveTo(x, y);
+
+                if (push) {
+                    hubServer.moveTo(this.paintId, x, y);
+                }
             }
         }
 
-        back() {
+        back(push = true) {
             if (this.brushes.length > 0) {
                 this.forwardBrushes.push(NN(this.brushes.pop()));
                 api.back(this.paintId);
             }
-        }
 
-        forward() {
-            if (this.forwardBrushes.length > 0) {
-                this.brushes.push(NN(this.forwardBrushes.pop()));
-                api.forward(this.paintId);
+            if (push) {
+                hubServer.back(this.paintId);
             }
         }
 
-        setColor(color: string) {
-            this.currentColor = color;
-            api.updateColor(this.paintId, color);
+        forward(push = true) {
+            if (this.forwardBrushes.length > 0) {
+                this.brushes.push(NN(this.forwardBrushes.pop()));
+            }
+
+            if (push) {
+                api.forward(this.paintId);
+                hubServer.forward(this.paintId);
+            }
         }
 
-        setSize(size: number) {
+        setColor(color: string, push = true) {
+            this.currentColor = color;
+
+            if (push) {
+                api.updateColor(this.paintId, color);
+                hubServer.setColor(this.paintId, color);
+            }
+        }
+
+        setSize(size: number, push = true) {
             this.currentSize = size;
-            api.updateSize(this.paintId, size);
+
+            if (push) {
+                api.updateSize(this.paintId, size);
+                hubServer.setSize(this.paintId, size);
+            }
         }
     }
 
@@ -129,14 +160,21 @@
         }
     }
 
+    async function createNew() {
+        let paintId = await api.create(DefaultSize, DefaultColor);
+        location.replace(`?id=${paintId}`);
+    }
+
     async function main() {
-        let paintId = getUrlQuery("paintId");
-        if (paintId === null) {
-            let paintId = await api.create(DefaultSize, DefaultColor);
-            location.replace(`?paintId=${paintId}`);
+        let paintIdUrl = getUrlQuery("id");
+        if (paintIdUrl === null) {
+            await createNew();
         } else {
-            let brushMgr = new BrushManager(parseInt(paintId));
+            let paintId = parseInt(paintIdUrl);
+            let brushMgr = new BrushManager(paintId);
             let r = new Renderer(brushMgr);
+
+            await initHub(brushMgr);
 
             dom.onStart((x, y) => brushMgr.start(x, y));
             dom.onEnd((x, y) => brushMgr.end(x, y));
@@ -148,10 +186,25 @@
             dom.onColor(c => brushMgr.setColor(c));
             dom.onSize(s => brushMgr.setSize(s));
 
+            dom.createNew = createNew;
+
+            hubServer.join(paintId);
+
             r.render();
             window["r"] = r;
             window["b"] = brushMgr;
         }
+    }
+
+    async function initHub(brushMgr: BrushManager) {
+        hubClient.start = (x, y) => brushMgr.start(x, y, false);
+        hubClient.moveTo = (x, y) => brushMgr.moveTo(x, y, false);
+        hubClient.end = (x, y) => brushMgr.end(x, y, false);
+        hubClient.forward = () => brushMgr.forward(false);
+        hubClient.back = () => brushMgr.back(false);
+        hubClient.setColor = c => brushMgr.setColor(c, false);
+        hubClient.setSize = s => brushMgr.setSize(s, false);
+        await Q($.connection.hub.start());
     }
 
     main();

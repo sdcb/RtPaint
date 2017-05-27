@@ -53,6 +53,11 @@
 
 	sql CreateBrush
 	{
+		DELETE FROM PaintDetails 
+		WHERE 
+			PaintId   = @PaintId AND
+			IsForward = 1;
+
 		INSERT INTO PaintDetails(PaintId, Size, Color, PathText) VALUES (@PaintId, @Size, @Color, @PathText);
 		SELECT SCOPE_IDENTITY();
 	}
